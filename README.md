@@ -46,8 +46,6 @@ The following scripts can run the experiments for figure 2, figure 3, figure 4, 
 ./figure5.sh
 ```
 
-
-
 For parts of the results in figure 2 and figure 4, the results can be found in the notebook as follows:
 
 ```
@@ -71,7 +69,7 @@ Figure 5 in the paper:
 
 <img src="images/Fig5.png" alt="image-20220208220554698" style="zoom:33%;" />
 
-(The instructions in this section can generate all subfigures of Figure 2-5)
+(The instructions can generate all subfigures in Figure 2-5)
 
 ## Code for table I in the paper
 
