@@ -21,7 +21,7 @@ notebook
 
 ## Gain all of the datasets for all experiments
 
-Running the following script can generate all files of dataset for the experiments showing in the paper.
+Running the following script can generate all files of dataset for the experiments showing in the paper. (This command is optional; if it is not run, the default optimal network is used)
 
 ```
 ./gain_dataset.sh
