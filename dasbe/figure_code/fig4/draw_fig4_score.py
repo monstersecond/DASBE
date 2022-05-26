@@ -300,9 +300,7 @@ pd.options.display.notebook_repr_html=False
 # plt.rcParams['Figure.dpi']=75
 sns.set_theme(style='darkgrid')
 data, corr, spk_selected, gr, color,spk,ksr = load()
-# draw_score(data)
-# draw_corr(corr)
-# # draw_spk(spk_selected, gr)
-# # draw_coloring(color)
-# coloring(spk)
+draw_score(data)
+draw_corr(corr)
+coloring(spk)
 draw_ksr(ksr)
