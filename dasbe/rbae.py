@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-thresh = 1 # neuronal threshold
-lens = 0.5 # hyper-parameters of approximate function
+thresh = 1 
+lens = 0.5 
 decay = 0
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -25,16 +25,16 @@ act_fun = ActFun.apply
 
 def mem_update(ops, x, mem, spike):
     noise = torch.rand(mem.size(), device=device)
-    # mem = mem * decay * (1. - spike) + ops(x) + noise
+    
     mem = ops(x) + noise
-    spike = act_fun(mem) # act_fun : approximation firing function
+    spike = act_fun(mem) 
     return mem, spike
 
 class rbae(nn.Module):
     def __init__(self, input_size, hidden_size):
         super(rbae, self).__init__()
 
-        e_hidden_size, d_hidden_size = hidden_size #d_hidden_size[0] = e_hidden_size[-1]
+        e_hidden_size, d_hidden_size = hidden_size 
         print('e_hidden_size, d_hidden_size', e_hidden_size, d_hidden_size)
         self.encoder = nn.Sequential()
         size1 = input_size
@@ -48,7 +48,7 @@ class rbae(nn.Module):
                 self.encoder.add_module('eSigmoid{}'.format(hs), nn.Sigmoid())
             size1 = e_hidden_size[hs]
 
-        # recurrent connection between hidden layer
+        
         self.hidden_weight = nn.Parameter(torch.zeros((e_hidden_size[-1], e_hidden_size[-1])), requires_grad=True)
         self.hidden_weight.data.normal_(0, 1)
         self.hidden_bias = nn.Parameter(torch.zeros((e_hidden_size[-1],)), requires_grad=True)
@@ -83,15 +83,15 @@ class rbae(nn.Module):
             x: (batch_size, time_window_size, H * W)  0-1 matrix
             pre_spikes: (batch_size, hidden_size)  0-1 matrix
         output:
-            outputs: (batch_size * time_window_size, H * W)  输出的发放状态
-            spikes: (batch_size, hidden_size)  当前隐层的发放状态
+            outputs: (batch_size * time_window_size, H * W)  
+            spikes: (batch_size, hidden_size)  
         """
         outputs = []
         spikes = pre_spikes
         for t in range(x.shape[1]):
-            self.f -= 1  # 更新静息状态
-            _, cur_spikes = self.sample(self.encoder, x[:, t], self.mem, self.spike)  # h存储encoder后接IF的输出，为0-1脉冲串
-            if refractory > 0:  # 判断当前是否处于发放状态
+            self.f -= 1  
+            _, cur_spikes = self.sample(self.encoder, x[:, t], self.mem, self.spike)  
+            if refractory > 0:  
                 cur_spikes = torch.where((cur_spikes>0)&(self.f<0), 1, 0).type(dtype=torch.float32)
                 self.f = torch.where(cur_spikes > 0, refractory*torch.ones_like(cur_spikes, device=device), self.f).type(dtype=torch.float32)
             

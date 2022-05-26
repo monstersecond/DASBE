@@ -30,9 +30,6 @@ triangle = np.array(
 shapes = [square, triangle, triangle[::-1, :].copy()]
 
 def generate_shapes_image_by_idx(width, height, shape_idx):
-    """
-    shape_idx指定了是什么形状, 范围在0~2内
-    """
     assert(shape_idx >= 0 and shape_idx <= 2)
     img = np.zeros((height, width))
     grp = np.zeros_like(img)
@@ -82,7 +79,7 @@ for i in range(nr_single_examples):
 import h5py
 
 with h5py.File(os.path.join(data_dir, 'shapes_with_pos.h5'), 'w') as f:
-    # 分别生成三个验证数据集，每个数据集只包含一个
+    
     single_0 = f.create_group('train_single_0')
     single_0.create_dataset('default', data=data_single_0, compression='gzip', chunks=(100, height, width))
     single_0.create_dataset('groups', data=grps_single_0, compression='gzip', chunks=(100, height, width))

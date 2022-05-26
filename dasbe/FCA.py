@@ -17,19 +17,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def closest_spike(s1, s2):
-    #print("closest spike spk shape: ", s1.shape, s2.shape)
-    # s1[0]=1
-    # s1[-1] = 1
-    # s2[0]=1
-    # s2[-1] = 1
-    # f1 = np.where(s1 > 0)[0]
-    # f2 = np.where(s2 > 0)[0]
-    # f1 = np.expand_dims(f1,1)
-    # f2 = np.expand_dims(f2,0)
-    # dt1 = np.min(np.abs(f1-f2), axis=1)
-    # return dt1
-
-    # 特判处理
     f1 = np.where(s1 > 0)[0]
     f2 = np.where(s2 > 0)[0]
     if len(f1) == 0 and len(f2) == 0:
@@ -43,7 +30,6 @@ def closest_spike(s1, s2):
 
 
 def AMD(s1, s2):
-    #print("AMD spk shape: ", s1.shape,s2.shape)
     T = s1.shape[0]
     dt1 = closest_spike(s1,s2)
     dt2 = closest_spike(s2,s1)
@@ -88,7 +74,6 @@ def AMD_similarity(spk, no_back_ground = True):
     print("amd: ",amd.shape)
     for i in range(spk.shape[1]):
         for j in range(spk.shape[1]):
-            # amd[i,j] = AMD(spk[:,i],spk[:,j])
             amd[i,j] = AMD(spk[:,i], spk[:,j])
     print("AMD_SHAPE: ", amd.shape)
     plt.figure()
@@ -111,21 +96,21 @@ def AMD_similarity_(spk, no_back_ground = True):
     return amd
 
 
-def HC(spk, no_background=False, target_cluster_num=3, visible=True, debug=True): # spk shape: iter * delay * X * Y
+def HC(spk, no_background=False, target_cluster_num=3, visible=True, debug=True): 
     sizex = spk.shape[2]
     sizey = spk.shape[3]
     spk = spk.reshape(-1, sizex, sizey)
     spk = spk.reshape(spk.shape[0], -1)
 
-    time_step = spk.shape[0]  # 时间窗长度 = iter * delay
-    neuron_num = spk.shape[1]  # 神经元数量 = X * Y
+    time_step = spk.shape[0]  
+    neuron_num = spk.shape[1]  
 
     if no_background == True:
         tmp_idx = np.where(spk.sum(0) > 0)[0]
         spk = spk[:, tmp_idx]
     
-    amd = AMD_similarity_(spk, no_background)    # 两两距离矩阵: neuron_num * neuron_num
-    idx = list(range(0, neuron_num))             # 维护当前未合并的神经元id
+    amd = AMD_similarity_(spk, no_background)    
+    idx = list(range(0, neuron_num))             
     cluster_res = [[i] for i in range(neuron_num)]
     amd[range(neuron_num), range(neuron_num)] = np.inf
 
@@ -157,13 +142,13 @@ def HC(spk, no_background=False, target_cluster_num=3, visible=True, debug=True)
 
         cluster_res[idx1].extend(cluster_res[idx2])
 
-        # spk[:, idx1] += spk[:, idx2]  # space reuse
-        # np.where(spk[:, idx1] > 0, 1, 0)
+        
+        
         if random.random() >= 0.5:
             spk[:, idx1] = spk[:, idx2]
         idx.remove(idx2)
 
-        for i in idx:   # update AMD matrix
+        for i in idx:   
             amd[idx1, i] = amd[i, idx1] = victor_purpura_metric(spk[:, idx1], spk[:, i])
         amd[idx1, idx1] = np.inf
 
@@ -206,11 +191,9 @@ def HC(spk, no_background=False, target_cluster_num=3, visible=True, debug=True)
 if __name__ == "__main__":
     s1 = np.array([1, 0, 1, 0, 1, 0, 0, 0, 0, 1])
     s2 = np.array([0, 0, 1, 1, 0, 0, 0, 0, 0, 0])
-    # print(closest_spike(s2,s1))
+    
 
     data = np.random.randint(0, 2, (5, 2, 5, 5))
     print(data.shape)
     print(HC(data, debug=False, visible=False))
 
-    # print(victor_purpura_matrix(s1, s2))
-    # print(victor_purpura_matrix(s2, s1))

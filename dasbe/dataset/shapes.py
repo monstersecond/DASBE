@@ -51,9 +51,6 @@ def generate_shapes_image(width, height, nr_shapes=3):
 
 
 def generate_shapes_image_by_idx(width, height, shape_idx):
-    """
-    shape_idx指定了是什么形状, 范围在0~2内
-    """
     assert(shape_idx >= 0 and shape_idx <= 2)
     img = np.zeros((height, width))
     grp = np.zeros_like(img)
@@ -127,7 +124,7 @@ with h5py.File(os.path.join(data_dir, 'shapes.h5'), 'w') as f:
     test.create_dataset('default', data=data_test, compression='gzip', chunks=(100, height, width))
     test.create_dataset('groups', data=grps_test, compression='gzip', chunks=(100, height, width))
 
-    # 分别生成三个验证数据集，每个数据集只包含一个
+    
     single_0 = f.create_group('train_single_0')
     single_0.create_dataset('default', data=data_single_0, compression='gzip', chunks=(100, height, width))
     single_0.create_dataset('groups', data=grps_single_0, compression='gzip', chunks=(100, height, width))
@@ -139,5 +136,3 @@ with h5py.File(os.path.join(data_dir, 'shapes.h5'), 'w') as f:
     single_2 = f.create_group('train_single_2')
     single_2.create_dataset('default', data=data_single_2, compression='gzip', chunks=(100, height, width))
     single_2.create_dataset('groups', data=grps_single_2, compression='gzip', chunks=(100, height, width))
-
-    

@@ -63,8 +63,7 @@ def draw_fig(iter, X, label, fig_num, H, W, dir):
     fig.savefig(dir + str(iter) + '.png')
 
 
-def train_bcdae(save_dir, dataset_name, H, W, hidden_size, batch_size=128, num_epoch=200, lr=0.0001,
-              log_iter=False, max_unchange_epoch=40, fig_dir='./tmp_img/bars_'):
+def train_bcdae(save_dir, dataset_name, H, W, hidden_size, batch_size=128, num_epoch=200, lr=0.0001, log_iter=False, max_unchange_epoch=40, fig_dir='./tmp_img/bars_'):
     """
     Train BAE network.
 

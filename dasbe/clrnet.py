@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-thresh = 1 # neuronal threshold
-lens = 0.5 # hyper-parameters of approximate function
+thresh = 1 
+lens = 0.5 
 decay = 0
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -31,7 +31,7 @@ def mem_update(ops, x):
     input_ = ops(x)
     noise = torch.rand(input_.size(), device=device)
     mem = input_ + noise
-    spike = act_fun(mem) # act_fun : approximation firing function
+    spike = act_fun(mem) 
     return input_, spike
 
 
@@ -42,7 +42,7 @@ class CLRNET(nn.Module):
         e_hidden_size, d_hidden_size = hidden_size 
         print('e_hidden_size, d_hidden_size',e_hidden_size, d_hidden_size)
 
-        # encoder
+        
         self.encoder = nn.Sequential()
         size1 = input_size
         for hs in range(len(e_hidden_size)):
@@ -55,14 +55,14 @@ class CLRNET(nn.Module):
                 self.encoder.add_module('eSigmoid{}'.format(hs), nn.Sigmoid())
             size1 = e_hidden_size[hs]
 
-        # 隐层相关参数
+        
         self.hidden_size = e_hidden_size[-1]
-        self.f = torch.zeros(e_hidden_size[-1], device=device)  # refractory flag for sample i
+        self.f = torch.zeros(e_hidden_size[-1], device=device)  
 
-        # 膜电位更新
+        
         self.sample = mem_update
 
-        # decoder
+        
         hs = 0
         self.decoder = nn.Sequential()
         for hs in range(len(d_hidden_size)-1):

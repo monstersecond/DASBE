@@ -28,8 +28,8 @@ triangle = np.array(
 
 shapes = [square, triangle, triangle[::-1, :].copy()]
 
-# Load the MNIST Dataset as prepared by the brainstorm data script
-# You will need to run mnist.py first
+
+
 with h5py.File(os.path.join(data_dir, 'MNIST.hdf5'), 'r') as f:
     mnist_digits = f['normalized_full/training/default'][0, :]
     targets = f['normalized_full/training/targets'][:]
@@ -44,8 +44,8 @@ def generate_mnist_shape_img(digit_nr, nr_shapes=1, test=False):
         img = (mnist_digits[digit_nr].reshape(28, 28) > 0.5).astype(np.float)
     else:
         img = (mnist_digits_test[digit_nr].reshape(28, 28) > 0.5).astype(np.float)
-    # else:
-    #     img = (mnist_digits[digit_nr].reshape(28, 28) > 0.5).astype(np.float)
+    
+    
     grp = (img > 0.5).astype(np.float)
     mask = grp.copy()
     k = 2
@@ -103,10 +103,10 @@ with h5py.File(os.path.join(data_dir, 'mnist_shape.h5'), 'w') as f:
     train = f.create_group('train_multi')
     train.create_dataset('default', data=data, compression='gzip', chunks=(100, 28, 28))
     train.create_dataset('groups', data=grps, compression='gzip', chunks=(100, 28, 28))
-    # train.create_dataset('targets', data=targets, compression='gzip', chunks=(100))
+    
     
     test = f.create_group('test')
     test.create_dataset('default', data=data_test, compression='gzip', chunks=(100, 28, 28))
     test.create_dataset('groups', data=grps_test, compression='gzip', chunks=(100, 28, 28))
-    # test.create_dataset('targets', data=targets_test, compression='gzip', chunks=(100))
+    
 

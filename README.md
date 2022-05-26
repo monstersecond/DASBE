@@ -1,6 +1,6 @@
 # Dance of SNN and ANN: Solving binding problem by combining spike timing and reconstructive attentio
 
-This repository is the code for the paper *Dance of SNN and ANN: Solving binding problem by combining spike timing and reconstructive attention.* It can reproduce the main results of the paper. 
+This repository is the code for the paper *Dance of SNN and ANN: Solving binding problem by combining spike timing and reconstructive attention.* It can reproduce the main results of the paper.
 
 The binding problem is one of the fundamental challenges that prevent the artificial neural network (ANNs) from a compositional understanding of the world like human perception, because disentangled and distributed representations of generative factors can interfere and lead to ambiguity when complex data with multiple objects are presented. In this paper, we propose a brain-inspired unsupervised hybrid neural network (HNN) that introduces temporal binding theory originated from neuroscience into ANNs by integrating spike timing dynamics (via spiking neural networks, SNNs) with reconstructive attention (by ANNs). Spike timing provides an additional dimension for grouping, while reconstructive feedback coordinates the spikes into temporal coherent states. Through iterative interaction of ANN and SNN, the model continuously binds multiple objects at alternative synchronous firing times in the SNN coding space. The effectiveness of the model is evaluated on five artificially generated datasets of binary images. By visualization and analysis, we demonstrate that the binding is explainable, soft, flexible, and hierarchical. Notably, the model is trained on single object datasets without explicit supervision on grouping, but can successfully bind multiple objects on test datasets, showing its compositional generalization capability. Further results show its binding ability in dynamic situations.
 
@@ -14,6 +14,8 @@ matplotlib
 seaborn
 h5py
 numpy
+sklearn
+notebook
 
 ```
 
@@ -35,7 +37,7 @@ Running the following script can train all networks for the experiments except m
 
 ## Code for figures in the paper
 
-The following scripts can run the experiments for figure 2, figure 3, figure 4, and figure 5.
+The following scripts can run the experiments for figure 2, figure 3, figure 4, and figure 5. (`figure3.sh` may take a long time to run)
 
 ```
 ./figure2.sh

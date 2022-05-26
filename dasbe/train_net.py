@@ -174,11 +174,11 @@ def train_net(save_dir, dataset_name, H, W, hidden_size, p_min=0.6, p_max=0.8, b
 
 
 def train_bars():
-    train_net(save_dir="./tmp_net/bars_net.pty", dataset_name="bars", H=20, W=20, hidden_size = [[100], [100]], log_iter=False, fig_dir='./tmp_imgs/bar/bars_', lr=0.01)
+    train_net(save_dir="./tmp_net/bars_net.pty", dataset_name="bars", H=20, W=20, batch_size=1024, hidden_size = [[100], [100]], log_iter=False, fig_dir='./tmp_imgs/bar/bars_', lr=0.01)
 
 
 def train_corner():
-    train_net(save_dir="./tmp_net/corners_net.pty", dataset_name="corners", H=28, W=28,hidden_size = [[100], [100]], log_iter=False, fig_dir='./tmp_imgs/corner/corners_', lr=0.01)
+    train_net(save_dir="./tmp_net/corners_net.pty", dataset_name="corners", H=28, W=28, batch_size=1024, hidden_size=[[100], [100]], log_iter=False, fig_dir='./tmp_imgs/corner/corners_', lr=0.01)
 
 
 def train_shape():

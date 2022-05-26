@@ -17,15 +17,6 @@ import numpy as np
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-# def lr_scheduler(optimizer, epoch, lr_decay_epoch=1):
-#     """Decay learning rate by a factor of 0.1 every lr_decay_epoch epochs."""
-#     # if epoch % lr_decay_epoch == 0 and epoch > 1:
-#     for param_group in optimizer.param_groups:
-#         if param_group['lr'] * 0.1 >= 1e-3:
-#             param_group['lr'] = param_group['lr'] * 0.1
-#     return optimizer,dtype=torch.float32
-
-
 def lr_scheduler(optimizer):
     for param_group in optimizer.param_groups:
         param_group['lr'] = param_group['lr'] * 0.1
@@ -57,7 +48,7 @@ def draw_fig(iter, X, label, fig_num, H, W, dir):
     idx = 0
     for i in range(nrows):
         for j in range(ncols):
-            # print(X[idx].reshape(H, W))
+            
             plot_tools.plot_input_image(X[idx].reshape(H, W), axes[i][j])
             idx += 1
             if idx >= fig_num:
@@ -94,11 +85,11 @@ def train_clrnet(save_dir, dataset_name, H, W, hidden_size, batch_size=128, num_
     train_loader = DataLoader(dataset=train_dataset, batch_size=1, shuffle=True, num_workers=2)
     ver_loader = DataLoader(dataset=val_dataset, batch_size=1)
 
-    net = clrnet.CLRNET(H * W, hidden_size).to(device)  # 输入大小为28*28，隐藏层大小为500
+    net = clrnet.CLRNET(H * W, hidden_size).to(device)  
     print(net)
 
     ceriterion_1 = nt_xent.NT_Xent(3, temperature)
-    ceriterion_2 = F.binary_cross_entropy  # 交叉熵损失函数#nn.MSELoss()
+    ceriterion_2 = F.binary_cross_entropy  
 
     optimizer = torch.optim.Adam(net.parameters(), lr=lr)
 
@@ -113,7 +104,7 @@ def train_clrnet(save_dir, dataset_name, H, W, hidden_size, batch_size=128, num_
             x_i = x_i.reshape(x_i.shape[1], -1)
             x_j = x_j.reshape(x_j.shape[1], -1)
 
-            label_i = copy.deepcopy(x_i)  # reconstruct
+            label_i = copy.deepcopy(x_i)  
             label_j = copy.deepcopy(x_j)
 
             x_i = salt_pepper_noise(x_i, 0.6)
@@ -141,10 +132,10 @@ def train_clrnet(save_dir, dataset_name, H, W, hidden_size, batch_size=128, num_
             running_loss += loss.cpu().item()
             total_loss += loss.cpu().item()
 
-            if iter == 0 and epoch % 10 == 0:# and epoch != 0:
+            if iter == 0 and epoch % 10 == 0:
                 draw_fig(epoch, np.concatenate([out_i.cpu().detach().numpy(), out_j.cpu().detach().numpy()], axis=0), np.concatenate([label_i.cpu().detach().numpy(), label_j.cpu().detach().numpy()], axis=0), 6, H, W, dir=fig_dir)
 
-        # 更新学习率
+        
         if epoch == 30:
             optimizer = lr_scheduler(optimizer)
         if epoch == 50:
@@ -152,17 +143,17 @@ def train_clrnet(save_dir, dataset_name, H, W, hidden_size, batch_size=128, num_
         if epoch == 70:
             optimizer = lr_scheduler(optimizer)
 
-        # 输出EPOCH训练信息
+        
         print("After training epoch [%d], loss [%.5f], hidden loss [%.5f]" % (epoch, total_loss, loss1))
 
-        # 验证集
+        
         with torch.no_grad():
             cur_ver_loss = 0
             for iter, (x_i, x_j) in enumerate(ver_loader):
                 x_i = x_i.reshape(x_i.shape[1], -1)
                 x_j = x_j.reshape(x_j.shape[1], -1)
 
-                label_i = copy.deepcopy(x_i)  # reconstruct
+                label_i = copy.deepcopy(x_i)  
                 label_j = copy.deepcopy(x_j)
 
                 x_i = x_i.to(device)
@@ -179,7 +170,7 @@ def train_clrnet(save_dir, dataset_name, H, W, hidden_size, batch_size=128, num_
                 loss4 = spikes_i.mean() + spikes_j.mean()
 
                 loss = 2 * loss1 + loss2 + loss3 + 0.5 * loss4
-                # print(loss1.cpu().item(), loss2.cpu().item(), loss3.cpu().item())
+                
                 cur_ver_loss += loss.cpu().item()
 
             if cur_ver_loss < min_ver_loss:
@@ -189,11 +180,11 @@ def train_clrnet(save_dir, dataset_name, H, W, hidden_size, batch_size=128, num_
             else:
                 unchange_epoch += 1
 
-        # 输出EPOCH验证集信息
+        
         print("After verification epoch [%d], loss [%.5f, %.5f]" % (epoch, cur_ver_loss, min_ver_loss))
 
-        # if unchange_epoch > max_unchange_epoch:
-        #     break
+        
+        
         if epoch % 10 == 0:
             torch.save(net, save_dir)
 
@@ -233,11 +224,11 @@ def train_clrnet_with_batch(save_dir, dataset_name, H, W, hidden_size, batch_siz
     ver_loader_1 = DataLoader(dataset=val_dataset_1, batch_size=batch_size)
     ver_loader_2 = DataLoader(dataset=val_dataset_2, batch_size=batch_size)
 
-    net = clrnet.CLRNET(H * W, hidden_size).to(device)  # 输入大小为28*28，隐藏层大小为500
+    net = clrnet.CLRNET(H * W, hidden_size).to(device)  
     print(net)
 
     ceriterion_1 = nt_xent.NT_Xent_batch(temperature)
-    ceriterion_2 = F.binary_cross_entropy  # 交叉熵损失函数#nn.MSELoss()
+    ceriterion_2 = F.binary_cross_entropy  
 
     optimizer = torch.optim.Adam(net.parameters(), lr=lr)
 
@@ -274,9 +265,9 @@ def train_clrnet_with_batch(save_dir, dataset_name, H, W, hidden_size, batch_siz
             loss2 = ceriterion_2(outs[0], labels[0])
             loss3 = ceriterion_2(outs[1], labels[1])
             loss4 = ceriterion_2(outs[2], labels[2])
-            # loss5 = spikes[0].mean() + spikes[1].mean() + spikes[2].mean()
             
-            loss = loss1 + loss2 + loss3 + loss4 #+ 0.1 * loss5
+            
+            loss = loss1 + loss2 + loss3 + loss4 
             
             optimizer.zero_grad()
             loss.backward()
@@ -286,23 +277,20 @@ def train_clrnet_with_batch(save_dir, dataset_name, H, W, hidden_size, batch_siz
             total_loss += loss.cpu().item()
             contrust_loss += loss1.cpu().item()
 
-            if iter == 0 and epoch % 10 == 0:# and epoch != 0:
+            if iter == 0 and epoch % 10 == 0:
                 draw_fig(epoch, np.concatenate([outs[i][:6].cpu().detach().numpy() for i in range(3)], axis=0), 
                         np.concatenate([labels[i][:6].cpu().detach().numpy() for i in range(3)], axis=0), 
                         18, H, W, dir=fig_dir)
 
-        # 更新学习率
-        # if epoch == 50:
-        #     optimizer = lr_scheduler(optimizer)
-        # if epoch == 100:
-        #     optimizer = lr_scheduler(optimizer)
-        # if epoch == 150:
-        #     optimizer = lr_scheduler(optimizer)
+        if epoch == 100:
+            optimizer = lr_scheduler(optimizer)
+        if epoch == 150:
+            optimizer = lr_scheduler(optimizer)
 
-        # 输出EPOCH训练信息
+        
         print("After training epoch [%d], loss [%.5f], hidden loss [%.5f]" % (epoch, total_loss, contrust_loss))
 
-        # 验证集
+        
         with torch.no_grad():
             cur_ver_loss = 0
             for iter, (x_0, x_1, x_2) in enumerate(zip(ver_loader_0, ver_loader_1, ver_loader_2)):
@@ -330,9 +318,9 @@ def train_clrnet_with_batch(save_dir, dataset_name, H, W, hidden_size, batch_siz
                 loss2 = ceriterion_2(outs[0], labels[0])
                 loss3 = ceriterion_2(outs[1], labels[1])
                 loss4 = ceriterion_2(outs[2], labels[2])
-                # loss5 = spikes[0].mean() + spikes[1].mean() + spikes[2].mean()
+                
             
-                loss = loss1 + loss2 + loss3 + loss4 #+ 0.1 * loss5
+                loss = loss1 + loss2 + loss3 + loss4 
 
                 cur_ver_loss += loss.cpu().item()
 
@@ -343,11 +331,11 @@ def train_clrnet_with_batch(save_dir, dataset_name, H, W, hidden_size, batch_siz
             else:
                 unchange_epoch += 1
 
-        # 输出EPOCH验证集信息
+        
         print("After verification epoch [%d], loss [%.5f, %.5f]" % (epoch, cur_ver_loss, min_ver_loss))
 
-        # if unchange_epoch > max_unchange_epoch:
-        #     break
+        if unchange_epoch > max_unchange_epoch:
+            break
 
         if epoch % 10 == 0:
             torch.save(net, save_dir)
@@ -378,5 +366,5 @@ def train_shapes_batch():
 
 
 if __name__ == "__main__":
-    # train_shapes()
+    
     train_shapes_batch()

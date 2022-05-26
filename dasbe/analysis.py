@@ -117,7 +117,7 @@ def factor_analysis(name='shapes'):
     plt.show()
 
 
-def rate(spk,win,back=-1): # not necessary
+def rate(spk,win,back=-1): 
     if back!=-1:
         spk = spk[-back:, :, :, :]
     sizex = spk.shape[2]
@@ -137,7 +137,7 @@ def rate(spk,win,back=-1): # not necessary
     plt.show()
 
 
-def LFP(context):  # local field potential
+def LFP(context):  
     lfp = context.mean((2, 3))
     lfp = lfp.reshape(-1)
     plt.figure()
@@ -145,7 +145,7 @@ def LFP(context):  # local field potential
     plt.show()
 
 
-def labeled_synchrony_measure(spk,label, back = 2, num = 2, show=True): # low level only
+def labeled_synchrony_measure(spk,label, back = 2, num = 2, show=True): 
     K = np.max(label)
     sizex = spk.shape[2]
     sizey = spk.shape[3]
@@ -154,8 +154,8 @@ def labeled_synchrony_measure(spk,label, back = 2, num = 2, show=True): # low le
     T = spk.shape[0]
     name = ['red','blue','green','yellow','purple','orange','pink','silver','snow','teal','navy','gray']
     print("K: ",K)
-    groups = np.zeros((int(K),spk.shape[0],spk.shape[1],spk.shape[2])) # K,T,W,H
-    selected = np.zeros((int(K),spk.shape[0],num)) # K,T,num
+    groups = np.zeros((int(K),spk.shape[0],spk.shape[1],spk.shape[2])) 
+    selected = np.zeros((int(K),spk.shape[0],num)) 
 
     for t in range(spk.shape[0]):
         for idx in range(spk.shape[1]):
@@ -175,7 +175,7 @@ def labeled_synchrony_measure(spk,label, back = 2, num = 2, show=True): # low le
         t_axis = np.arange(1,T+1)
         plt.figure()
         plt.subplot(K+1+num*K,1,1)
-        #print(groups[0,:])
+        
         for k in range(int(K)):
             plt.bar(t_axis,groups[k,:],color=name[k])
         for k in range(int(K)):
@@ -196,7 +196,7 @@ def coloring(spk, para, back=10, show=True):
     spk = spk.transpose(0,2,3,1)
     T = spk.shape[-1]
     w = para[0]/para[1]
-    colors = 0.5*(np.sin(2*w*np.pi*np.linspace(0, 1, T, endpoint=False))+1) # [0,1] and periodic
+    colors = 0.5*(np.sin(2*w*np.pi*np.linspace(0, 1, T, endpoint=False))+1) 
     colors = np.tile(colors,(spk.shape[0],spk.shape[1], spk.shape[2],1))
 
     results = spk*colors
@@ -228,7 +228,7 @@ def victor_purpura_disssimilarity(spk, GT, q, no_background=False, show = True):
     spk = spk.reshape(spk.shape[0], -1)
 
     if no_background == True:
-        # tmp_idx = np.where(spk.sum(0) > 0)[0]
+        
         tmp_idx = np.where(GT.reshape(-1) > 0)[0]
         spk = spk[:, tmp_idx]
 
@@ -259,7 +259,7 @@ def DBSCAN_cluster(spk,label,eps,min_n,q, back = 5,show=True):
     sizey = spk.shape[3]
     spk = spk.reshape(-1, sizex, sizey)
     spk = spk.reshape(spk.shape[0], -1)
-    spk = spk.T  # (n_samples, n_featrues)
+    spk = spk.T  
     estimator = DBSCAN(eps=eps, min_samples=min_n, metric = victor_purpura_metric,metric_params={'q':q})
     estimator.fit(spk)
     label_pred = estimator.labels_
@@ -290,7 +290,7 @@ def new_index(GT,no_background=True):
     return new_idx
 
 
-def fMRI_measure(spk, GT, back = 10,width1=1, width2 = 1, alpha = 0.5, show=True): #both low & high level
+def fMRI_measure(spk, GT, back = 10,width1=1, width2 = 1, alpha = 0.5, show=True): 
     sizex = spk.shape[2]
     sizey = spk.shape[3]
     spk = spk[-back:,:,:,:]
@@ -317,11 +317,12 @@ def fMRI_measure(spk, GT, back = 10,width1=1, width2 = 1, alpha = 0.5, show=True
         plt.show()
     return fMRI/np.max(fMRI)
 
-def k_means(spk_to_copied,label,show = True, back = 10, smooth=0): #both low & high level
+
+def k_means(spk_to_copied,label,show = True, back = 10, smooth=0): 
     spk = copy.deepcopy(spk_to_copied)
     spk = spk[-back:, :, :, :]
     alpha=1
-    # note: update in 3.27
+    
     sizex = spk.shape[2]
     sizey = spk.shape[3]
     spk = spk.reshape(-1, sizex, sizey)
@@ -334,7 +335,7 @@ def k_means(spk_to_copied,label,show = True, back = 10, smooth=0): #both low & h
     spk = spk_tmp
     K = np.max(label)+1
     spk = spk.reshape(spk.shape[0], -1)
-    spk = spk.T # (n_samples, n_featrues)
+    spk = spk.T 
     estimator = KMeans(n_clusters=int(K), init='k-means++')
     estimator.fit(spk)
     label_pred = estimator.labels_
@@ -351,7 +352,7 @@ def k_means(spk_to_copied,label,show = True, back = 10, smooth=0): #both low & h
     return label_pred
 
 
-def k_means_var(spk_to_be_copied, label, K, show=True, back=10, smooth=0): #both low & high level
+def k_means_var(spk_to_be_copied, label, K, show=True, back=10, smooth=0): 
     spk = copy.deepcopy(spk_to_be_copied)
     spk = spk[-back:, :, :, :]
     
@@ -367,7 +368,7 @@ def k_means_var(spk_to_be_copied, label, K, show=True, back=10, smooth=0): #both
 
     spk = spk_tmp
     spk = spk.reshape(spk.shape[0], -1)
-    spk = spk.T # (n_samples, n_featrues)
+    spk = spk.T 
     inertia = 10000000
     K_final = -1
     for k in K:
@@ -434,12 +435,12 @@ def VP_silhouette(spk,labels,q,back = 10, no_background=True):
     sizey = spk.shape[3]
     spk = spk.reshape(-1, sizex, sizey)
     spk = spk.reshape(spk.shape[0], -1)
-    labels = labels.reshape(-1)  # (n_samples)
-    if no_background == True: # this make plot better!!!
+    labels = labels.reshape(-1)  
+    if no_background == True: 
         idx = np.where(labels.reshape(-1)!=0)[0]
         spk = spk[:,idx]
         labels = labels[idx]
-    spk = spk.T  # (n_samples, n_featrues)
+    spk = spk.T  
     print(spk.shape, labels.shape)
     score = silhouette_score(spk, labels, metric=victor_purpura_metric, q=q)
 
@@ -453,7 +454,7 @@ def syn_vs_rate_score(spk,labels,back = 10, no_background=True, smooth=2, step_w
         sizey = spk.shape[3]
         spk = spk.reshape(-1, sizex, sizey)
     spk = spk.reshape(spk.shape[0], -1)
-    labels = labels.reshape(-1)  # (n_samples)
+    labels = labels.reshape(-1)  
 
     spk_tmp = copy.deepcopy(spk)
     alpha = 1
@@ -465,12 +466,12 @@ def syn_vs_rate_score(spk,labels,back = 10, no_background=True, smooth=2, step_w
     estimator.fit(spk_tmp.T)
     label_pred = estimator.labels_
 
-    if no_background == True: # this make plot better!!!
+    if no_background == True: 
         idx = np.where(labels.reshape(-1)!=0)[0]
         spk = spk[:,idx]
         spk_tmp1 = copy.deepcopy(spk_tmp)[:,idx]
         label_pred = label_pred[idx]
-    spk = spk.T  # (n_samples, n_featrues)
+    spk = spk.T  
     score_syn = silhouette_score(spk,label_pred,metric=victor_purpura_metric,q = 1/6)
     score_rate = silhouette_score(spk, label_pred, metric=victor_purpura_metric, q=0)
     score_k_means = silhouette_score(spk_tmp1.T, label_pred)
@@ -478,7 +479,7 @@ def syn_vs_rate_score(spk,labels,back = 10, no_background=True, smooth=2, step_w
     return score_syn, score_rate, score_k_means, inertia
 
 
-def explore_timescale(spk, GT, para, time_range=[], back = 10, no_back_ground=False): # another is to use VP silhouette as average VP_distance at tao
+def explore_timescale(spk, GT, para, time_range=[], back = 10, no_back_ground=False): 
     spk = spk[-back:,:,:,:]
     T_max = 2*para[1]
     plt.figure()
@@ -513,15 +514,15 @@ def find_timescale_with_silhouette(spk,GT,pred_label,time_range,back=10, no_bg=T
     print('finding timescale of temporal binding')
     spk = spk[-back:,:,:,:]
     spk = spk.reshape(-1,spk.shape[2],spk.shape[3])
-    print("spk.shape in find",spk.shape) # T,X,Y
+    print("spk.shape in find",spk.shape) 
     if no_bg:
         idx1 = np.where(GT != 0)[0]
         idx2 = np.where(GT != 0)[1]
         spk = spk[:, idx1, idx2]
         pred_label = pred_label[idx1,idx2]
-        print("spk.shape in find", spk.shape)  # sample * feature
+        print("spk.shape in find", spk.shape)  
     spk = spk.T
-    # sil plot with different tao
+    
     sil_tao = []
     for tao in time_range:
         q = 1 / (tao + 0.00001)
@@ -546,13 +547,14 @@ def evaluate_grouping(true_groups, predicted):
 
     return score
 
+
 def autocorrelation(spk, label, corr_len = 100, show=True):
     K = np.max(label)
     sizex = spk.shape[2]
     sizey = spk.shape[3]
     spk = spk.reshape(-1, sizex, sizey)
     T = spk.shape[0]
-    groups = np.zeros((int(K), spk.shape[0], spk.shape[1], spk.shape[2]))  # K,T,W*H
+    groups = np.zeros((int(K), spk.shape[0], spk.shape[1], spk.shape[2]))  
     for t in range(spk.shape[0]):
         for idx in range(spk.shape[1]):
             for idy in range(spk.shape[2]):
@@ -566,14 +568,9 @@ def autocorrelation(spk, label, corr_len = 100, show=True):
     for i in range(corr_len):
         for k in range(int(K)):
             peak = np.dot(groups[k, :], groups[k, :])
-            if i==0:
-                # corr = np.dot(groups[k,:], groups[k,:])
+            if i==0:         
                 corr=1
             else:
-                #print(i, groups.shape, groups[k,:-i].shape, groups[k,i:].shape)
-                #corr = groups[k,:-i]*groups[k,i:]
-
-                # corr = np.dot(groups[k,:-i],groups[k,i:])
                 corr = np.dot(groups[k, :-i], groups[k, i:])/peak
             corr_record[k,corr_len-1-i] = corr
             corr_record[k, corr_len-1 + i] = corr
@@ -590,8 +587,7 @@ def autocorrelation(spk, label, corr_len = 100, show=True):
     return corr_record
 
 
-def step_wise_analysis(spk,label,para,smooth=2,no_background=True): # delay * X * Y
-    # print(spk.shape)
+def step_wise_analysis(spk,label,para,smooth=2,no_background=True): 
     sizex = spk.shape[1]
     sizey = spk.shape[2]
     spk = spk.reshape(spk.shape[0], -1)
@@ -605,7 +601,7 @@ def step_wise_analysis(spk,label,para,smooth=2,no_background=True): # delay * X 
     estimator.fit(spk_tmp.T)
     label_pred = estimator.labels_
     label_pred_img = label_pred.reshape(sizex, sizey)
-    if no_background == True: # this make plot better!!! note spk & spk_tmp below
+    if no_background == True: 
         idx = np.where(label.reshape(-1)!=0)[0]
         spk1 = spk[:,idx]
         spk_tmp1 = copy.deepcopy(spk_tmp)[:,idx]
@@ -619,8 +615,7 @@ def step_wise_analysis(spk,label,para,smooth=2,no_background=True): # delay * X 
     return label_pred_img, synchrony_score,rate_score, km_score, inertia, results
 
 
-def step_wise_analysis_dynamics(spk, label, para,smooth=2, no_background=True): # delay * X * Y
-    # print(spk.shape)
+def step_wise_analysis_dynamics(spk, label, para,smooth=2, no_background=True): 
     sizex = spk.shape[1]
     sizey = spk.shape[2]
     spk = spk.reshape(spk.shape[0], -1)
@@ -647,13 +642,13 @@ def step_wise_analysis_dynamics(spk, label, para,smooth=2, no_background=True): 
         label_pred[idxes[back_ground_id]] = 0
     label_pred_img = label_pred.reshape(sizex, sizey)
     
-    if no_background == True: # this make plot better!!! note spk & spk_tmp below
+    if no_background == True: 
         idx = np.where(label.reshape(-1)!=0)[0]
         spk1 = spk[:,idx]
         label_pred = label_pred[idx]
 
-    synchrony_score = silhouette_score(spk1.T,label_pred,metric=victor_purpura_metric,q = 1/3) # note
-    rate_score = silhouette_score(spk1.T, label_pred, metric=victor_purpura_metric, q=0)  # note
+    synchrony_score = silhouette_score(spk1.T,label_pred,metric=victor_purpura_metric,q = 1/3) 
+    rate_score = silhouette_score(spk1.T, label_pred, metric=victor_purpura_metric, q=0)  
     results = coloring(spk.reshape(-1,sizex,sizey)[None,...],para,back=1,show=False)
     return label_pred_img, synchrony_score,rate_score, results
 
@@ -680,12 +675,9 @@ def draw_step_wise_analysis(grp,syn,r,clr):
     plt.show()
 
 
-def feature_neuron(data='shapes'): # shape: 10000:10000:10000
+def feature_neuron(data='shapes'): 
     if data == 'shapes':
         print('finding feature neurons in shapes net')
-        # net = torch.load('./tmp_net/shapes_bae_0.8_net.pty')
-        # net = torch.load('./tmp_net/shape_clrnet_net.pty')
-        #net = torch.load('../tmp_net/shape_clrnet_spikes_net.pty').to(device)
         net = torch.load('./tmp_net/shapes_svae_gaussian_0.8_1500_net.pty').to(device)
         single = gain_verf_dataset("./tmp_data", "shapes")
         hidden_size = (30, 50)
@@ -703,7 +695,7 @@ def feature_neuron(data='shapes'): # shape: 10000:10000:10000
         bg = 0
         for sp in range(3):
             plt.subplot(1, 3, sp + 1)
-            # plt.imshow(sp_sum_record[sp]-bg, vmin=-0.5, vmax=0.5)
+            
             plt.imshow(sp_sum_record[sp]-bg)
             plt.colorbar(shrink=0.8)
             plt.axis('off')
@@ -712,7 +704,7 @@ def feature_neuron(data='shapes'): # shape: 10000:10000:10000
         return sp_sum_record
 
 
-def feature_neuron_with_net(net, hidden_size=(30, 40), vmin=-1, vmax=1, data='shapes'): # shape: 10000:10000:10000
+def feature_neuron_with_net(net, hidden_size=(30, 40), vmin=-1, vmax=1, data='shapes'): 
     if data == 'shapes':
         print('finding feature neurons in shapes net')
         single = gain_verf_dataset("../tmp_data", data)
@@ -731,7 +723,7 @@ def feature_neuron_with_net(net, hidden_size=(30, 40), vmin=-1, vmax=1, data='sh
         bg = (1 / 3) * (sp_sum_record[0] + sp_sum_record[1] + sp_sum_record[2])
         for sp in range(3):
             plt.subplot(1, 3, sp + 1)
-            # plt.imshow(sp_sum_record[sp], vmin=0, vmax=1.0)
+            
             plt.imshow(sp_sum_record[sp])
             plt.colorbar(shrink=0.8)
             plt.axis('off')

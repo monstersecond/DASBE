@@ -54,7 +54,7 @@ class BindingDataset(Dataset):
                 self.data = test_data
                 self.label = test_label
 
-            # split train and verification dataset
+            
             if train and ver:
                 data_size = int(self.data.shape[0] * train_ver_splie_rate)
                 if is_ver:
@@ -108,9 +108,9 @@ class ClrNetDataset(Dataset):
 
         shape1, shape2, shape3 = gain_verf_dataset(data_dir, name)
 
-        # shape1 = shape1[:shape1.shape[0] // 10]
-        # shape2 = shape2[:shape2.shape[0] // 10]
-        # shape3 = shape3[:shape3.shape[0] // 10]
+        
+        
+        
         
         data_shape = shape1.shape
         assert(len(data_shape) == 3)
@@ -138,7 +138,7 @@ class ClrNetDataset(Dataset):
         assert(train == True)
         assert(ver == True)
 
-        # split train and verification dataset
+        
         data_size = int(train_data_i.shape[0] * train_ver_splie_rate)
         if is_ver:
             self.data_i = train_data_i[data_size:, :]
@@ -205,7 +205,7 @@ class ClrNetBatchDataset(Dataset):
         assert(train == True)
         assert(ver == True)
 
-        # split train and verification dataset
+        
         data_size = int(self.shape_chosen.shape[0] * train_ver_splie_rate)
         if is_ver:
             self.data = self.shape_chosen[data_size:, :]
@@ -268,9 +268,6 @@ def gain_dataset(data_dir, name):
 
 
 def gain_verf_dataset(data_dir, name):
-    """
-    只保存含有一个物体的数据集
-    """
     if name == "bars":
         with open_dataset(data_dir, name) as f:
             hori = f["train_single_hori"]["default"][:]
@@ -323,12 +320,10 @@ def test_verf(data_name):
         print(s0[0], s1[0], s2[0])
 
 
-def test_clevr_dataset():
-    # 1. 直接获取clevr中single data数据的方法：
+def test_clevr_dataset():  
     single_clevr_data, multi_clevr_data = gain_dataset("", "clevr")
     print(single_clevr_data.shape, multi_clevr_data.shape)
 
-    # 2.1 使用pytorch中的dataloader加载single object clevr的方法：
     bars_dataset = BindingDataset("", "clevr", is_single=True, train=True, ver=True, is_ver=False)
     train_loader = DataLoader(dataset=bars_dataset, batch_size=32, shuffle=True, num_workers=2)
     for epoch in range(32):
@@ -339,7 +334,6 @@ def test_clevr_dataset():
             break
         break
 
-    # 3. 使用pytorch中的dataloader加载multiple objects clevr的方法：
     bars_dataset = BindingDataset("", "clevr", is_single=False, train=True, ver=True, is_ver=False)
     train_loader = DataLoader(dataset=bars_dataset, batch_size=32, shuffle=True, num_workers=2)
     for epoch in range(32):
@@ -349,10 +343,3 @@ def test_clevr_dataset():
             print(label.shape)
             break
         break
-
-
-if __name__ == "__main__":
-    # test_corners_dataset()
-    # test_verf("shapes")
-    # test_clevr_dataset()
-    test_bars_dataset()
