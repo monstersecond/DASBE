@@ -46,6 +46,8 @@ The following scripts can run the experiments for figure 2, figure 3, figure 4, 
 ./figure5.sh
 ```
 
+
+
 For parts of the results in figure 2 and figure 4, the results can be found in the notebook as follows:
 
 ```
@@ -53,9 +55,29 @@ For parts of the results in figure 2 and figure 4, the results can be found in t
 ./dasbe/figure_code/draw_figure4.ipynb
 ```
 
+Figure 2 in the paper:
+
+<img src="images/Fig2.png" alt="image-20220208220554698" style="zoom:33%;" />
+
+Figure 3 in the paper:
+
+<img src="images/Fig3.png" alt="image-20220208220554698" style="zoom:33%;" />
+
+Figure 4 in the paper:
+
+<img src="images/Fig4.png" alt="image-20220208220554698" style="zoom:33%;" />
+
+Figure 5 in the paper:
+
+<img src="images/Fig5.png" alt="image-20220208220554698" style="zoom:33%;" />
+
+(The instructions in this section can generate all subfigures of Figure 2-5)
+
 ## Code for table I in the paper
 
-The following script can generate the experiment results in table I.
+<img src="images/table.png" alt="image-20220208220554698" style="zoom:33%;" />
+
+The following script can generate the experiment results in table I (above table is table I in the paper).
 
 ```
 ./table1.sh
